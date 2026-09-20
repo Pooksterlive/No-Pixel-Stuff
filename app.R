@@ -31,14 +31,9 @@ ui <- fluidPage(
       actionButton("dark_mode", "Enable dark mode", class = "btn-secondary"),
       uiOutput("employee_selector"),
       tags$hr(),
-      p(
-        class = "demo-note",
-        "Demo only — no real payments or sensitive data."
-      )
+      p(class = "demo-note", "Demo only — no real payments or sensitive data.")
     ),
-    mainPanel(
-      uiOutput("page_content")
-    )
+    mainPanel(uiOutput("page_content"))
   )
 )
 
@@ -46,40 +41,23 @@ server <- function(input, output, session) {
   inventory_changed <- reactiveVal(0)
   employee_changed <- reactiveVal(0)
   dark_mode <- reactiveVal(FALSE)
-  employees <- reactive({
-    employee_changed()
-    read_employees()
-  })
+  employees <- reactive({ employee_changed(); read_employees() })
 
   observeEvent(input$dark_mode, {
     dark_mode(!dark_mode())
     session$sendCustomMessage("toggle-dark-mode", dark_mode())
-    updateActionButton(
-      session,
-      "dark_mode",
-      label = if (dark_mode()) "Disable dark mode" else "Enable dark mode"
-    )
+    updateActionButton(session, "dark_mode", label = if (dark_mode()) "Disable dark mode" else "Enable dark mode")
   })
 
   output$employee_selector <- renderUI({
     data <- employees()
     active <- data[data$Active == TRUE, , drop = FALSE]
-    choices <- setNames(
-      active$State_ID,
-      paste(active$Name, "—", active$Role)
-    )
-
-    selectInput(
-      "State_ID",
-      "Current employee",
-      choices = choices,
-      selected = if (nrow(active)) active$State_ID[1]
-    )
+    choices <- setNames(active$State_ID, paste(active$Name, "—", active$Role))
+    selectInput("State_ID", "Current employee", choices = choices, selected = if (nrow(active)) active$State_ID[1], width = "100%")
   })
 
   output$page_content <- renderUI({
-    switch(
-      input$page,
+    switch(input$page,
       pos = mod_pos_ui("pos"),
       inventory = mod_inventory_ui("inventory"),
       employee = mod_employee_ui("employee"),
@@ -87,11 +65,7 @@ server <- function(input, output, session) {
     )
   })
 
-  mod_pos_server(
-    "pos",
-    State_ID = reactive(input$State_ID),
-    changed = inventory_changed
-  )
+  mod_pos_server("pos", State_ID = reactive(input$State_ID), changed = inventory_changed)
   mod_inventory_server("inventory", changed = inventory_changed)
   mod_employee_server("employee", changed = employee_changed)
   mod_transactions_server("transactions")
