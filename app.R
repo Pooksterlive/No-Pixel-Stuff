@@ -5,6 +5,7 @@ source("R/validation.R")
 source("R/mod_inventory.R")
 source("R/mod_employee.R")
 source("R/mod_pos.R")
+source("R/mod_transactions.R")
 
 initialize_csv_files()
 
@@ -18,7 +19,8 @@ ui <- fluidPage(
         choices = c(
           "Point of Sale" = "pos",
           "Inventory" = "inventory",
-          "Employees" = "employee"
+          "Employees" = "employee",
+          "Transactions" = "transactions"
         ),
         selected = "pos"
       ),
@@ -64,7 +66,8 @@ server <- function(input, output, session) {
       input$page,
       pos = mod_pos_ui("pos"),
       inventory = mod_inventory_ui("inventory"),
-      employee = mod_employee_ui("employee")
+      employee = mod_employee_ui("employee"),
+      transactions = mod_transactions_ui("transactions")
     )
   })
 
@@ -73,8 +76,9 @@ server <- function(input, output, session) {
     State_ID = reactive(input$State_ID),
     changed = inventory_changed
   )
-  # mod_inventory_server("inventory", changed = inventory_changed)
-  # mod_employee_server("employee", changed = employee_changed)
+  mod_inventory_server("inventory", changed = inventory_changed)
+  mod_employee_server("employee", changed = employee_changed)
+  mod_transactions_server("transactions")
 }
 
 shinyApp(ui, server)
