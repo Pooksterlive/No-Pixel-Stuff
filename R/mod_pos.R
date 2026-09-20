@@ -16,7 +16,7 @@ mod_pos_ui <- function(id) {
         div(
           class = "pos-card",
           h3("Inventory"),
-          textInput(ns("search"), "Find inventory", placeholder = "Search by item ID or name"),
+          textInput(ns("search"), "Find inventory", placeholder = "Search by item name"),
           DTOutput(ns("items"))
         )
       ),
@@ -58,13 +58,17 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       data <- read_inventory()
       term <- tolower(trimws(input$search %||% ""))
       if (nzchar(term) && nrow(data)) {
-        data <- data[grepl(term, tolower(paste(data$item_id, data$name)), fixed = TRUE), , drop = FALSE]
+        data <- data[grepl(term, tolower(data$name), fixed = TRUE), , drop = FALSE]
       }
       data
     })
 
     output$items <- renderDT(
-      datatable(available(), selection = "single", rownames = FALSE)
+      datatable(
+        available()[, c("name", "price"), drop = FALSE],
+        selection = "single",
+        rownames = FALSE
+      )
     )
 
     observeEvent(input$items_rows_selected, {
@@ -86,12 +90,12 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       data <- cart()
       if (!nrow(data)) {
         data$price <- numeric()
-        return(data)
+        return(data[, c("name", "original_price", "price"), drop = FALSE])
       }
 
       discount_rate <- as.numeric(input$discount %||% 0) / 100
       data$price <- round(data$original_price * (1 - discount_rate), 2)
-      data[, c("item_id", "name", "original_price", "price"), drop = FALSE]
+      data[, c("name", "original_price", "price"), drop = FALSE]
     })
 
     output$cart <- renderTable(discounted_cart())
@@ -161,7 +165,8 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       write_csv(rbind(transactions, tx), file_paths$transactions)
 
       details <- read_csv(file_paths$transaction_items)
-      cart_data <- discounted_cart()
+      cart_data <- cart()
+      cart_data$price <- round(cart_data$original_price * (1 - as.numeric(input$discount %||% 0) / 100), 2)
       new_details <- data.frame(
         transaction_item_id = next_id(details, "transaction_item_id") + seq_len(nrow(cart_data)) - 1L,
         transaction_id = tx_id,
