@@ -10,7 +10,6 @@ mod_pos_ui <- function(id) {
           column(6, textInput(ns("seller_name"), "Seller name", placeholder = "Full name")),
           column(6, textInput(ns("seller_State_ID"), "Seller State ID", placeholder = "State identification number"))
         ),
-        textInput(ns("search"), "Find inventory", placeholder = "Search by item name"),
         DTOutput(ns("items"))
       ),
       column(
@@ -36,8 +35,6 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
     available <- reactive({
       changed()
       data <- read_inventory()
-      term <- tolower(trimws(input$search %||% ""))
-      if (nzchar(term) && nrow(data)) data <- data[grepl(term, tolower(data$name), fixed = TRUE), , drop = FALSE]
       data
     })
 
