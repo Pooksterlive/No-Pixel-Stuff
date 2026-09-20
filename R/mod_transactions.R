@@ -16,10 +16,16 @@ mod_transactions_server <- function(id) {
 
       inventory <- read_inventory()
       details <- read_csv(file_paths$transaction_items)
+      employees <- read_employees()
 
       rows <- lapply(seq_len(nrow(transactions)), function(i) {
         tx <- transactions[i, , drop = FALSE]
         tx_items <- details[details$transaction_id == tx$transaction_id, , drop = FALSE]
+        employee <- employees[
+          as.character(employees$State_ID) == as.character(tx$employee_State_ID),
+          , drop = FALSE
+        ]
+        employee_name <- if (nrow(employee)) employee$Name[1] else "Unknown"
 
         if (!nrow(tx_items)) {
           return(data.frame(
@@ -27,6 +33,7 @@ mod_transactions_server <- function(id) {
             transaction_number = tx$transaction_number,
             created_at = tx$created_at,
             employee_State_ID = tx$employee_State_ID,
+            employee_name = employee_name,
             seller_name = tx$seller_name,
             seller_State_ID = tx$seller_State_ID,
             payment_method = tx$payment_method,
@@ -42,6 +49,7 @@ mod_transactions_server <- function(id) {
           transaction_number = tx$transaction_number,
           created_at = tx$created_at,
           employee_State_ID = tx$employee_State_ID,
+          employee_name = employee_name,
           seller_name = tx$seller_name,
           seller_State_ID = tx$seller_State_ID,
           payment_method = tx$payment_method,
@@ -65,8 +73,13 @@ mod_transactions_server <- function(id) {
         ))
       }
 
-      summary <- data[!duplicated(data$transaction_id), c("transaction_number", "total"), drop = FALSE]
-      names(summary) <- c("Sale ID", "Total")
+      summary <- data[!duplicated(data$transaction_id), c(
+        "transaction_number",
+        "seller_name",
+        "employee_name",
+        "total"
+      ), drop = FALSE]
+      names(summary) <- c("Sale ID", "Seller Name", "Employee Name", "Total")
 
       datatable(
         summary,
@@ -87,9 +100,16 @@ mod_transactions_server <- function(id) {
       transaction_id <- summary$transaction_id[selected[1]]
       details <- data[data$transaction_id == transaction_id, , drop = FALSE]
 
-      employee_name <- read_employees()
-      employee_name <- employee_name[as.character(employee_name$State_ID) == as.character(details$employee_State_ID[1]), , drop = FALSE]
-      employee_label <- if (nrow(employee_name)) paste(employee_name$Name[1], "(", employee_name$Role[1], ")") else "Unknown"
+      employee <- read_employees()
+      employee <- employee[
+        as.character(employee$State_ID) == as.character(details$employee_State_ID[1]),
+        , drop = FALSE
+      ]
+      employee_label <- if (nrow(employee)) {
+        paste(employee$Name[1], "(", employee$Role[1], ")")
+      } else {
+        "Unknown"
+      }
 
       tagList(
         tags$hr(),
