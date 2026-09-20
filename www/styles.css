@@ -4,23 +4,11 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.sidebarPanel {
-  background: #252525;
-  color: #f7c948;
-}
+.sidebarPanel { background: #252525; color: #f7c948; }
+h2 { color: #684f24; font-weight: 700; }
+.demo-note { color: #f7c948; font-size: .85rem; margin-top: 2rem; }
 
-h2 {
-  color: #684f24;
-  font-weight: 700;
-}
-
-.demo-note {
-  color: #f7c948;
-  font-size: .85rem;
-  margin-top: 2rem;
-}
-
-/* POS cards provide clear visual separation between workflow sections. */
+/* POS card container styling */
 .pos-card {
   margin: 0 0 20px;
   padding: 20px;
@@ -46,36 +34,11 @@ h2 {
   margin-left: 8px;
 }
 
-.dark-mode,
-.dark-mode .container-fluid,
-.dark-mode .main-container {
-  background: #1e1e1e;
-  color: #eeeeee;
-}
-
-.dark-mode .sidebarPanel {
-  background: #111111;
-  color: #f7c948;
-}
-
-.dark-mode h1,
-.dark-mode h2,
-.dark-mode h3,
-.dark-mode label,
-.dark-mode p,
-.dark-mode .control-label {
-  color: #eeeeee;
-}
-
-.dark-mode .well,
-.dark-mode .modal-content,
-.dark-mode .form-control,
-.dark-mode .selectize-input,
-.dark-mode .selectize-dropdown {
-  background: #2b2b2b;
-  color: #eeeeee;
-  border-color: #555555;
-}
+/* Dark mode styles */
+.dark-mode, .dark-mode .container-fluid, .dark-mode .main-container { background: #1e1e1e; color: #eeeeee; }
+.dark-mode .sidebarPanel { background: #111111; color: #f7c948; }
+.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode label, .dark-mode p, .dark-mode .control-label { color: #eeeeee; }
+.dark-mode .well, .dark-mode .modal-content, .dark-mode .form-control { background: #2b2b2b; color: #eeeeee; border-color: #555555; }
 
 .dark-mode .pos-card {
   background: #2b2b2b;
@@ -83,63 +46,51 @@ h2 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.dark-mode .pos-card h3 {
-  border-bottom-color: #555555;
-  color: #f7c948;
-}
-
-/* Keep every POS control readable against the dark card background. */
-.dark-mode .pos-card input.form-control,
-.dark-mode .pos-card input[type="text"],
-.dark-mode .pos-card input[type="number"],
-.dark-mode .pos-card select.form-control,
-.dark-mode .pos-card textarea,
-.dark-mode .pos-card .selectize-input {
-  background: #3a3a3a !important;
-  color: #ffffff !important;
-  border: 1px solid #777777 !important;
-  box-shadow: none;
-}
-
-.dark-mode .pos-card input.form-control::placeholder,
-.dark-mode .pos-card input[type="text"]::placeholder,
-.dark-mode .pos-card input[type="number"]::placeholder {
-  color: #bdbdbd !important;
-  opacity: 1;
-}
-
-.dark-mode .pos-card input.form-control:focus,
-.dark-mode .pos-card select.form-control:focus,
-.dark-mode .pos-card .selectize-input.focus {
-  border-color: #f7c948 !important;
-  box-shadow: 0 0 0 2px rgba(247, 201, 72, 0.25) !important;
-}
-
-.dark-mode .pos-card .selectize-control,
+.dark-mode .pos-card h3 { border-bottom-color: #555555; color: #f7c948; }
+.dark-mode .pos-card .form-control,
+.dark-mode .pos-card .selectize-input,
 .dark-mode .pos-card .selectize-dropdown,
 .dark-mode .pos-card .selectize-dropdown-content,
-.dark-mode .pos-card .selectize-dropdown .option,
-.dark-mode .pos-card .selectize-dropdown .active,
-.dark-mode .pos-card .selectize-input .item,
-.dark-mode .pos-card .selectize-input input {
-  background: #3a3a3a !important;
-  color: #ffffff !important;
+.dark-mode .pos-card input,
+.dark-mode .pos-card select,
+.dark-mode .pos-card textarea,
+.dark-mode .pos-card .btn,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_filter input,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_length select {
+  background: #2b2b2b !important;
+  color: #eeeeee !important;
   border-color: #777777 !important;
 }
 
-.dark-mode .pos-card .selectize-dropdown .option:hover,
+.dark-mode .pos-card .form-control::placeholder,
+.dark-mode .pos-card .selectize-input input,
+.dark-mode .pos-card .selectize-dropdown .option,
 .dark-mode .pos-card .selectize-dropdown .active {
-  background: #684f24 !important;
-  color: #ffffff !important;
+  color: #d9d9d9 !important;
 }
 
-.dark-mode .pos-card .table,
-.dark-mode .pos-card .table > thead > tr > th,
-.dark-mode .pos-card .table > tbody > tr > td,
+.dark-mode .pos-card table,
+.dark-mode .pos-card table.table,
 .dark-mode .pos-card table.dataTable,
-.dark-mode .pos-card table.dataTable thead,
+.dark-mode .pos-card .dataTables_wrapper table {
+  background: #2b2b2b !important;
+  color: #eeeeee !important;
+  border-color: #555555 !important;
+}
+
+.dark-mode .pos-card table thead,
+.dark-mode .pos-card table thead tr,
+.dark-mode .pos-card table thead th,
 .dark-mode .pos-card table.dataTable thead th,
-.dark-mode .pos-card table.dataTable tbody,
+.dark-mode .pos-card table.dataTable thead td {
+  background: #333333 !important;
+  color: #ffffff !important;
+  border-color: #666666 !important;
+}
+
+.dark-mode .pos-card table tbody,
+.dark-mode .pos-card table tbody tr,
+.dark-mode .pos-card table tbody td,
 .dark-mode .pos-card table.dataTable tbody tr,
 .dark-mode .pos-card table.dataTable tbody td {
   background: #2b2b2b !important;
@@ -147,57 +98,38 @@ h2 {
   border-color: #555555 !important;
 }
 
+.dark-mode .pos-card table tbody tr:hover,
 .dark-mode .pos-card table.dataTable tbody tr:hover,
 .dark-mode .pos-card table.dataTable tbody tr:hover > td {
   background: #414141 !important;
   color: #ffffff !important;
 }
 
-.dark-mode .pos-card .dataTables_wrapper,
-.dark-mode .pos-card .dataTables_wrapper .dataTables_info,
-.dark-mode .pos-card .dataTables_wrapper .dataTables_length,
-.dark-mode .pos-card .dataTables_wrapper .dataTables_filter,
-.dark-mode .pos-card .dataTables_wrapper .dataTables_paginate {
-  color: #eeeeee !important;
-}
-
+.dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button,
 .dark-mode .pos-card .dataTables_wrapper .dataTables_filter input,
-.dark-mode .pos-card .dataTables_wrapper .dataTables_length select,
-.dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button {
-  background: #3a3a3a !important;
+.dark-mode .pos-card .dataTables_wrapper .dataTables_length select {
+  background: #2b2b2b !important;
   color: #eeeeee !important;
-  border: 1px solid #777777 !important;
+  border-color: #666666 !important;
 }
 
 .dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
 .dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button.current {
   background: #684f24 !important;
   color: #ffffff !important;
-  border-color: #f7c948 !important;
-}
-
-.dark-mode .pos-card .text-output,
-.dark-mode .pos-card #pos-discounted_total,
-.dark-mode .pos-card #pos-change,
-.dark-mode .pos-card strong {
-  color: #ffffff !important;
-}
-
-.dark-mode .pos-card .btn-success {
-  background: #3f7d4f !important;
-  border-color: #70b77e !important;
-  color: #ffffff !important;
 }
 
 .dark-mode .pos-card .btn-default,
+.dark-mode .pos-card .btn-primary,
+.dark-mode .pos-card .btn-success,
+.dark-mode .pos-card .btn-danger,
 .dark-mode .pos-card .btn-secondary {
-  background: #444444 !important;
-  border-color: #888888 !important;
-  color: #ffffff !important;
+  border-color: #777777;
 }
 
-.dark-mode .pos-card .btn:hover,
-.dark-mode .pos-card .btn:focus {
-  filter: brightness(1.15);
-  color: #ffffff !important;
+.dark-mode .pos-card strong,
+.dark-mode .pos-card .control-label,
+.dark-mode .pos-card .shiny-output-error,
+.dark-mode .pos-card .shiny-text-output {
+  color: #eeeeee !important;
 }
