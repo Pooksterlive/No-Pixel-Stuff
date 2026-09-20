@@ -10,6 +10,10 @@ source("R/mod_transactions.R")
 initialize_csv_files()
 
 ui <- fluidPage(
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
+    tags$script(src = "dark-mode.js")
+  ),
   titlePanel("Hong Kong Pawn"),
   sidebarLayout(
     sidebarPanel(
@@ -24,7 +28,14 @@ ui <- fluidPage(
         ),
         selected = "pos"
       ),
-      uiOutput("employee_selector")
+      actionButton("dark_mode", "Enable dark mode", class = "btn-secondary"),
+      uiOutput("employee_selector"),
+      tags$hr(),
+      p(
+        class = "demo-note",
+        "Demo only — no real payments or sensitive data."
+      )
+
     ),
     mainPanel(
       uiOutput("page_content")
@@ -35,9 +46,20 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   inventory_changed <- reactiveVal(0)
   employee_changed <- reactiveVal(0)
+  dark_mode <- reactiveVal(FALSE)
   employees <- reactive({
     employee_changed()
     read_employees()
+  })
+
+  observeEvent(input$dark_mode, {
+    dark_mode(!dark_mode())
+    session$sendCustomMessage("toggle-dark-mode", dark_mode())
+    updateActionButton(
+      session,
+      "dark_mode",
+      label = if (dark_mode()) "Disable dark mode" else "Enable dark mode"
+    )
   })
 
   output$employee_selector <- renderUI({
