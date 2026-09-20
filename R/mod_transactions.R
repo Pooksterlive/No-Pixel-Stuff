@@ -1,15 +1,16 @@
-# R/mod_transactions.R
 mod_transactions_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h2("Transaction History"),
-    DTOutput(ns("transactions_table"))
+    p("Select a transaction to view its details."),
+    DTOutput(ns("transactions_table")),
+    uiOutput(ns("transaction_details"))
   )
 }
 
 mod_transactions_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    transaction_rows <- reactive({
+    transaction_data <- reactive({
       transactions <- read_transactions()
       if (!nrow(transactions)) return(data.frame())
 
@@ -36,9 +37,7 @@ mod_transactions_server <- function(id) {
           ))
         }
 
-        item_names <- inventory$name[match(tx_items$item_id, inventory$item_id)]
-
-        tx_rows <- data.frame(
+        data.frame(
           transaction_id = tx$transaction_id,
           transaction_number = tx$transaction_number,
           created_at = tx$created_at,
@@ -46,38 +45,67 @@ mod_transactions_server <- function(id) {
           seller_name = tx$seller_name,
           seller_State_ID = tx$seller_State_ID,
           payment_method = tx$payment_method,
-          item_name = item_names,
+          item_name = inventory$name[match(tx_items$item_id, inventory$item_id)],
           unit_price = tx_items$unit_price,
           total = tx$total,
           stringsAsFactors = FALSE
         )
-
-        tx_rows
       })
 
       do.call(rbind, rows)
     })
 
     output$transactions_table <- renderDT({
-      data <- transaction_rows()
+      data <- transaction_data()
       if (!nrow(data)) {
-        return(datatable(data.frame(message = "No transactions found."), rownames = FALSE, options = list(dom = "t")))
+        return(datatable(
+          data.frame(message = "No transactions found."),
+          rownames = FALSE,
+          options = list(dom = "t")
+        ))
       }
 
+      # Keep one summary row per transaction in the initial view.
+      summary <- data[!duplicated(data$transaction_id), c("transaction_number", "total"), drop = FALSE]
+      names(summary) <- c("Sale ID", "Total")
+
       datatable(
-        data[, c(
-          "transaction_number",
-          "created_at",
-          "employee_State_ID",
-          "seller_name",
-          "seller_State_ID",
-          "payment_method",
-          "item_name",
-          "unit_price",
-          "total"
-        )],
+        summary,
         rownames = FALSE,
-        options = list(pageLength = 20)
+        selection = "single",
+        options = list(pageLength = 20, dom = "tip")
+      )
+    }, server = FALSE)
+
+    output$transaction_details <- renderUI({
+      selected <- input$transactions_table_rows_selected
+      data <- transaction_data()
+
+      if (!nrow(data) || is.null(selected) || !length(selected)) return(NULL)
+
+      summary <- data[!duplicated(data$transaction_id), , drop = FALSE]
+      if (selected[1] > nrow(summary)) return(NULL)
+      transaction_id <- summary$transaction_id[selected[1]]
+      details <- data[data$transaction_id == transaction_id, , drop = FALSE]
+
+      tagList(
+        tags$hr(),
+        h3(paste("Transaction details —", details$transaction_number[1])),
+        fluidRow(
+          column(4, strong("Sale ID"), br(), details$transaction_number[1]),
+          column(4, strong("Date"), br(), details$created_at[1]),
+          column(4, strong("Payment method"), br(), details$payment_method[1])
+        ),
+        fluidRow(
+          column(4, strong("Employee State ID"), br(), details$employee_State_ID[1]),
+          column(4, strong("Seller name"), br(), details$seller_name[1]),
+          column(4, strong("Seller State ID"), br(), details$seller_State_ID[1])
+        ),
+        br(),
+        renderTable({
+          details[, c("item_name", "unit_price"), drop = FALSE]
+        }, rownames = FALSE),
+        strong(paste("Total:", currency(details$total[1])))
       )
     })
   })
