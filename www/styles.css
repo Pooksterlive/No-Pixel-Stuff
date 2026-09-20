@@ -4,118 +4,42 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.sidebarPanel {
-  background: #252525;
-  color: #f7c948;
-}
+.sidebarPanel { background: #252525; color: #f7c948; }
+h2 { color: #684f24; font-weight: 700; }
+.demo-note { color: #f7c948; font-size: .85rem; margin-top: 2rem; }
 
-h2 {
-  color: #684f24;
-  font-weight: 700;
-}
+.dark-mode, .dark-mode .container-fluid, .dark-mode .main-container { background: #1e1e1e; color: #eeeeee; }
+.dark-mode .sidebarPanel { background: #111111; color: #f7c948; }
+.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode label, .dark-mode p, .dark-mode .control-label { color: #eeeeee; }
+.dark-mode .well, .dark-mode .modal-content, .dark-mode .form-control { background: #2b2b2b; color: #eeeeee; border-color: #555555; }
 
-.demo-note {
-  color: #f7c948;
-  font-size: .85rem;
-  margin-top: 2rem;
-}
-
-.dark-mode,
-.dark-mode .container-fluid,
-.dark-mode .main-container {
-  background: #1e1e1e;
-  color: #eeeeee;
-}
-
-.dark-mode .sidebarPanel {
-  background: #111111;
-  color: #f7c948;
-}
-
-.dark-mode h1,
-.dark-mode h2,
-.dark-mode h3,
-.dark-mode label,
-.dark-mode p,
-.dark-mode .control-label {
-  color: #eeeeee;
-}
-
-.dark-mode .well,
-.dark-mode .modal-content,
-.dark-mode .form-control,
-.dark-mode .selectize-input,
-.dark-mode .selectize-dropdown {
-  background: #2b2b2b;
-  color: #eeeeee;
-  border-color: #555555;
-}
-
-/* Apply the cart table's dark appearance to every Shiny and DT table. */
-.dark-mode table,
-.dark-mode table.table,
-.dark-mode table.dataTable,
-.dark-mode .dataTables_wrapper table {
-  background: #2b2b2b !important;
-  color: #eeeeee !important;
-  border-color: #555555 !important;
-}
-
-.dark-mode table thead,
-.dark-mode table thead tr,
-.dark-mode table thead th,
-.dark-mode table.dataTable thead th,
-.dark-mode table.dataTable thead td,
-.dark-mode .dataTables_wrapper table thead th {
-  background: #333333 !important;
-  color: #ffffff !important;
-  border-color: #555555 !important;
-}
-
-.dark-mode table tbody,
-.dark-mode table tbody tr,
-.dark-mode table tbody td,
-.dark-mode table.dataTable tbody tr,
-.dark-mode table.dataTable tbody td,
-.dark-mode .dataTables_wrapper table tbody td {
-  background: #2b2b2b !important;
-  color: #eeeeee !important;
-  border-color: #555555 !important;
-}
-
-.dark-mode table tbody tr:hover,
-.dark-mode table.dataTable tbody tr:hover,
-.dark-mode table.dataTable tbody tr:hover > td,
-.dark-mode .dataTables_wrapper table tbody tr:hover > td {
-  background: #414141 !important;
-  color: #ffffff !important;
-}
-
-.dark-mode table.dataTable tbody tr.selected,
-.dark-mode table.dataTable tbody tr.selected > td {
-  background: #684f24 !important;
-  color: #ffffff !important;
-}
-
-.dark-mode .dataTables_wrapper .dataTables_info,
-.dark-mode .dataTables_wrapper .dataTables_length,
-.dark-mode .dataTables_wrapper .dataTables_filter,
-.dark-mode .dataTables_wrapper .dataTables_paginate,
-.dark-mode .dataTables_wrapper .dataTables_processing {
-  color: #eeeeee !important;
-}
-
-.dark-mode .dataTables_wrapper .dataTables_filter input,
-.dark-mode .dataTables_wrapper .dataTables_length select,
-.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
+/* Current employee selectize control */
+.dark-mode .sidebarPanel .selectize-control,
+.dark-mode .sidebarPanel .selectize-input,
+.dark-mode .sidebarPanel .selectize-dropdown,
+.dark-mode .sidebarPanel .selectize-dropdown-content {
   background: #2b2b2b !important;
   color: #eeeeee !important;
   border-color: #777777 !important;
 }
-
-.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
-.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+.dark-mode .sidebarPanel .selectize-input input,
+.dark-mode .sidebarPanel .selectize-input .item,
+.dark-mode .sidebarPanel .selectize-dropdown .option,
+.dark-mode .sidebarPanel .selectize-dropdown .active {
+  background: #2b2b2b !important;
+  color: #eeeeee !important;
+}
+.dark-mode .sidebarPanel .selectize-dropdown .option:hover,
+.dark-mode .sidebarPanel .selectize-dropdown .active {
   background: #684f24 !important;
   color: #ffffff !important;
-  border-color: #8a6a32 !important;
 }
+
+.dark-mode table, .dark-mode table.table, .dark-mode table.dataTable, .dark-mode .dataTables_wrapper table { background: #2b2b2b !important; color: #eeeeee !important; border-color: #555555 !important; }
+.dark-mode table thead, .dark-mode table thead tr, .dark-mode table thead th, .dark-mode table.dataTable thead th, .dark-mode table.dataTable thead td { background: #333333 !important; color: #ffffff !important; border-color: #555555 !important; }
+.dark-mode table tbody, .dark-mode table tbody tr, .dark-mode table tbody td, .dark-mode table.dataTable tbody tr, .dark-mode table.dataTable tbody td { background: #2b2b2b !important; color: #eeeeee !important; border-color: #555555 !important; }
+.dark-mode table tbody tr:hover, .dark-mode table.dataTable tbody tr:hover, .dark-mode table.dataTable tbody tr:hover > td { background: #414141 !important; color: #ffffff !important; }
+.dark-mode table.dataTable tbody tr.selected, .dark-mode table.dataTable tbody tr.selected > td { background: #684f24 !important; color: #ffffff !important; }
+.dark-mode .dataTables_wrapper .dataTables_info, .dark-mode .dataTables_wrapper .dataTables_length, .dark-mode .dataTables_wrapper .dataTables_filter, .dark-mode .dataTables_wrapper .dataTables_paginate { color: #eeeeee !important; }
+.dark-mode .dataTables_wrapper .dataTables_filter input, .dark-mode .dataTables_wrapper .dataTables_length select, .dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button { background: #2b2b2b !important; color: #eeeeee !important; border-color: #777777 !important; }
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button:hover, .dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: #684f24 !important; color: #ffffff !important; border-color: #8a6a32 !important; }
