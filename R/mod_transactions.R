@@ -65,7 +65,6 @@ mod_transactions_server <- function(id) {
         ))
       }
 
-      # Keep one summary row per transaction in the initial view.
       summary <- data[!duplicated(data$transaction_id), c("transaction_number", "total"), drop = FALSE]
       names(summary) <- c("Sale ID", "Total")
 
@@ -88,6 +87,10 @@ mod_transactions_server <- function(id) {
       transaction_id <- summary$transaction_id[selected[1]]
       details <- data[data$transaction_id == transaction_id, , drop = FALSE]
 
+      employee_name <- read_employees()
+      employee_name <- employee_name[as.character(employee_name$State_ID) == as.character(details$employee_State_ID[1]), , drop = FALSE]
+      employee_label <- if (nrow(employee_name)) paste(employee_name$Name[1], "(", employee_name$Role[1], ")") else "Unknown"
+
       tagList(
         tags$hr(),
         h3(paste("Transaction details —", details$transaction_number[1])),
@@ -97,8 +100,11 @@ mod_transactions_server <- function(id) {
           column(4, strong("Payment method"), br(), details$payment_method[1])
         ),
         fluidRow(
+          column(4, strong("Current employee"), br(), employee_label),
           column(4, strong("Employee State ID"), br(), details$employee_State_ID[1]),
-          column(4, strong("Seller name"), br(), details$seller_name[1]),
+          column(4, strong("Seller name"), br(), details$seller_name[1])
+        ),
+        fluidRow(
           column(4, strong("Seller State ID"), br(), details$seller_State_ID[1])
         ),
         br(),
