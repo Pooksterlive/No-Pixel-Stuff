@@ -5,24 +5,35 @@ mod_pos_ui <- function(id) {
     fluidRow(
       column(
         width = 7,
-        h3("Seller information"),
-        fluidRow(
-          column(6, textInput(ns("seller_name"), "Seller name", placeholder = "Full name")),
-          column(6, textInput(ns("seller_State_ID"), "Seller State ID", placeholder = "State identification number"))
+        div(
+          class = "pos-card",
+          h3("Seller information"),
+          fluidRow(
+            column(6, textInput(ns("seller_name"), "Seller name", placeholder = "Full name")),
+            column(6, textInput(ns("seller_State_ID"), "Seller State ID", placeholder = "State identification number"))
+          )
         ),
-        DTOutput(ns("items"))
+        div(
+          class = "pos-card",
+          h3("Inventory"),
+          textInput(ns("search"), "Find inventory", placeholder = "Search by item name"),
+          DTOutput(ns("items"))
+        )
       ),
       column(
         width = 5,
-        h3("Cart"),
-        tableOutput(ns("cart")),
-        selectInput(ns("discount"), "Discount", choices = setNames(seq(0, 100, by = 5), paste0(seq(0, 100, by = 5), "%")), selected = 0),
-        strong(textOutput(ns("discounted_total"))),
-        selectInput(ns("payment"), "Payment method", PAYMENT_METHODS),
-        numericInput(ns("tendered"), "Amount tendered", 0, min = 0),
-        textOutput(ns("change")),
-        actionButton(ns("checkout"), "Complete sale", class = "btn-success"),
-        actionButton(ns("clear"), "Clear cart")
+        div(
+          class = "pos-card",
+          h3("Cart & payment"),
+          tableOutput(ns("cart")),
+          selectInput(ns("discount"), "Discount", choices = setNames(seq(0, 100, by = 5), paste0(seq(0, 100, by = 5), "%")), selected = 0),
+          strong(textOutput(ns("discounted_total"))),
+          selectInput(ns("payment"), "Payment method", PAYMENT_METHODS),
+          numericInput(ns("tendered"), "Amount tendered", 0, min = 0),
+          textOutput(ns("change")),
+          actionButton(ns("checkout"), "Complete sale", class = "btn-success"),
+          actionButton(ns("clear"), "Clear cart")
+        )
       )
     )
   )
@@ -35,6 +46,8 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
     available <- reactive({
       changed()
       data <- read_inventory()
+      term <- tolower(trimws(input$search %||% ""))
+      if (nzchar(term) && nrow(data)) data <- data[grepl(term, tolower(data$name), fixed = TRUE), , drop = FALSE]
       data
     })
 
