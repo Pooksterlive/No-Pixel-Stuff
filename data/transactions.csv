@@ -1,1 +1,1 @@
-transaction_id,transaction_number,employee_id,total,payment_method,created_at
+transaction_id,transaction_number,employee_State_ID,seller_name,seller_State_ID,total,payment_method,created_at

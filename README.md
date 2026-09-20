@@ -9,9 +9,10 @@ A multi-file R Shiny demo application for **Hong Kong Pawn**, a fictional pawn-s
 Features:
 
 - Point of sale with simulated checkout
-- CSV-backed inventory, employees, and transactions
+- CSV-backed inventory, employees, sellers, and transactions
 - Inventory management
 - Employee management
+- Seller name and State ID captured for every transaction
 - Static GitHub Pages documentation in `docs/`
 
 ### CSV file formats
@@ -26,6 +27,12 @@ item_id,name,price
 
 ```text
 State_ID,Name,Role,Active,Hire_Date
+```
+
+`data/transactions.csv` records the employee processing the transaction and the person selling to the store:
+
+```text
+transaction_id,transaction_number,employee_State_ID,seller_name,seller_State_ID,total,payment_method,created_at
 ```
 
 ### Run locally
