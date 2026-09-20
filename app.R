@@ -73,8 +73,8 @@ server <- function(input, output, session) {
     State_ID = reactive(input$State_ID),
     changed = inventory_changed
   )
-  # mod_inventory_server("inventory", changed = inventory_changed)
-  # mod_employee_server("employee", changed = employee_changed)
+  mod_inventory_server("inventory", changed = inventory_changed)
+  mod_employee_server("employee", changed = employee_changed)
 }
 
 shinyApp(ui, server)
