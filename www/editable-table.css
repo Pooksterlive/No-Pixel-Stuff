@@ -1,0 +1,30 @@
+/* Keep editable DataTables inputs readable while a cell is being edited. */
+.dataTables_wrapper table.dataTable td input,
+.dataTables_wrapper table.dataTable td input.form-control,
+table.dataTable td input,
+table.dataTable td input.form-control {
+  min-width: 5rem;
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff !important;
+  color: #252525 !important;
+  border: 1px solid #684f24 !important;
+  border-radius: 3px;
+  padding: 4px 6px;
+}
+
+.dark-mode .dataTables_wrapper table.dataTable td input,
+.dark-mode .dataTables_wrapper table.dataTable td input.form-control,
+.dark-mode table.dataTable td input,
+.dark-mode table.dataTable td input.form-control {
+  background: #414141 !important;
+  color: #ffffff !important;
+  border-color: #f7c948 !important;
+  caret-color: #ffffff !important;
+}
+
+.dark-mode .dataTables_wrapper table.dataTable td input::selection,
+.dark-mode table.dataTable td input::selection {
+  background: #684f24;
+  color: #ffffff;
+}

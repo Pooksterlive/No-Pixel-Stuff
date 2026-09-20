@@ -28,7 +28,16 @@ mod_inventory_server <- function(id, changed = reactiveVal(0)) {
           target = "cell",
           disable = list(columns = 0)
         ),
-        options = list(pageLength = 10, dom = "tip")
+        options = list(
+          pageLength = 10,
+          dom = "tip",
+          columnDefs = list(
+            list(
+              targets = which(names(items()) == "price") - 1,
+              className = "inventory-price-cell"
+            )
+          )
+        )
       )
     }, server = FALSE)
 
@@ -117,7 +126,7 @@ mod_inventory_server <- function(id, changed = reactiveVal(0)) {
 
       selected_item <- visible_data[selected_row[1], , drop = FALSE]
       showModal(modalDialog(
-        paste0("Remove ", selected_item$name, " from inventory?"),
+        paste0("Remove ", selected_item$name, " from inventory?"),
         footer = tagList(
           modalButton("Cancel"),
           actionButton(session$ns("confirm_remove"), "Remove item", class = "btn-danger")
