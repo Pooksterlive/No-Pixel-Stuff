@@ -51,24 +51,71 @@ h2 {
   border-color: #555555;
 }
 
-.dark-mode .table,
-.dark-mode .table > thead > tr > th,
-.dark-mode .table > tbody > tr > td {
-  background: #2b2b2b;
-  color: #eeeeee;
-  border-color: #555555;
+/* Apply the cart table's dark appearance to every Shiny and DT table. */
+.dark-mode table,
+.dark-mode table.table,
+.dark-mode table.dataTable,
+.dark-mode .dataTables_wrapper table {
+  background: #2b2b2b !important;
+  color: #eeeeee !important;
+  border-color: #555555 !important;
+}
+
+.dark-mode table thead,
+.dark-mode table thead tr,
+.dark-mode table thead th,
+.dark-mode table.dataTable thead th,
+.dark-mode table.dataTable thead td,
+.dark-mode .dataTables_wrapper table thead th {
+  background: #333333 !important;
+  color: #ffffff !important;
+  border-color: #555555 !important;
+}
+
+.dark-mode table tbody,
+.dark-mode table tbody tr,
+.dark-mode table tbody td,
+.dark-mode table.dataTable tbody tr,
+.dark-mode table.dataTable tbody td,
+.dark-mode .dataTables_wrapper table tbody td {
+  background: #2b2b2b !important;
+  color: #eeeeee !important;
+  border-color: #555555 !important;
+}
+
+.dark-mode table tbody tr:hover,
+.dark-mode table.dataTable tbody tr:hover,
+.dark-mode table.dataTable tbody tr:hover > td,
+.dark-mode .dataTables_wrapper table tbody tr:hover > td {
+  background: #414141 !important;
+  color: #ffffff !important;
+}
+
+.dark-mode table.dataTable tbody tr.selected,
+.dark-mode table.dataTable tbody tr.selected > td {
+  background: #684f24 !important;
+  color: #ffffff !important;
 }
 
 .dark-mode .dataTables_wrapper .dataTables_info,
 .dark-mode .dataTables_wrapper .dataTables_length,
 .dark-mode .dataTables_wrapper .dataTables_filter,
-.dark-mode .dataTables_wrapper .dataTables_paginate {
-  color: #eeeeee;
+.dark-mode .dataTables_wrapper .dataTables_paginate,
+.dark-mode .dataTables_wrapper .dataTables_processing {
+  color: #eeeeee !important;
 }
 
 .dark-mode .dataTables_wrapper .dataTables_filter input,
-.dark-mode .dataTables_wrapper .dataTables_length select {
-  background: #2b2b2b;
-  color: #eeeeee;
-  border-color: #777777;
+.dark-mode .dataTables_wrapper .dataTables_length select,
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
+  background: #2b2b2b !important;
+  color: #eeeeee !important;
+  border-color: #777777 !important;
+}
+
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: #684f24 !important;
+  color: #ffffff !important;
+  border-color: #8a6a32 !important;
 }
