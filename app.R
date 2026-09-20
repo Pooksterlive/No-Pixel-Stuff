@@ -24,12 +24,7 @@ ui <- fluidPage(
         ),
         selected = "pos"
       ),
-      uiOutput("employee_selector"),
-      tags$hr(),
-      p(
-        class = "demo-note",
-        "Demo only — no real payments or sensitive data."
-      )
+      uiOutput("employee_selector")
     ),
     mainPanel(
       uiOutput("page_content")
