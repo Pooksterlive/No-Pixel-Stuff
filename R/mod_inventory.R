@@ -2,13 +2,18 @@ mod_inventory_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h2("Inventory Management"),
-    p("Edit an item name or price directly in the table. Changes are saved to data/inventory.csv."),
     div(
-      actionButton(ns("add"), "Add item", class = "btn-primary"),
-      actionButton(ns("remove"), "Remove selected item", class = "btn-danger"),
-      style = "margin-bottom: 15px;"
+      class = "page-card",
+      p("Edit an item name or price directly in the table. Changes are saved to data/inventory.csv."),
+      div(
+        actionButton(ns("add"), "Add item", class = "btn-primary"),
+        actionButton(ns("remove"), "Remove selected item", class = "btn-danger")
+      )
     ),
-    DTOutput(ns("table"))
+    div(
+      class = "page-card",
+      DTOutput(ns("table"))
+    )
   )
 }
 
@@ -150,6 +155,270 @@ mod_inventory_server <- function(id, changed = reactiveVal(0)) {
       removeModal()
       changed(changed() + 1)
       showNotification("Inventory item removed.", type = "message")
+    })
+  })
+}
+
+mod_employee_ui <- function(id) {
+  ns <- NS(id)
+  tagList(
+    h2("Employee Management"),
+    div(
+      class = "page-card",
+      actionButton(ns("add"), "Add employee", class = "btn-primary"),
+      actionButton(ns("edit"), "Edit selected employee", class = "btn-secondary")
+    ),
+    div(
+      class = "page-card",
+      DTOutput(ns("table"))
+    )
+  )
+}
+
+mod_employee_server <- function(id, changed = reactiveVal(0)) {
+  moduleServer(id, function(input, output, session) {
+    employees <- reactive({
+      changed()
+      read_employees()
+    })
+
+    output$table <- renderDT({
+      datatable(
+        employees(),
+        rownames = FALSE,
+        selection = "single",
+        options = list(pageLength = 8)
+      )
+    })
+
+    observeEvent(input$add, {
+      showModal(modalDialog(
+        textInput(session$ns("name"), "Name"),
+        selectInput(session$ns("role"), "Role", EMPLOYEE_ROLES),
+        checkboxInput(session$ns("active"), "Active", TRUE),
+        dateInput(session$ns("hire_date"), "Hire date", value = Sys.Date()),
+        footer = tagList(
+          modalButton("Cancel"),
+          actionButton(session$ns("save"), "Save", class = "btn-primary")
+        )
+      ))
+    })
+
+    observeEvent(input$save, {
+      err <- validate_employee(input)
+      if (!is.null(err)) {
+        return(showNotification(err, type = "error"))
+      }
+
+      data <- read_employees()
+      row <- data.frame(
+        State_ID = next_id(data, "State_ID"),
+        Name = input$name,
+        Role = input$role,
+        Active = isTRUE(input$active),
+        Hire_Date = as.character(input$hire_date),
+        stringsAsFactors = FALSE
+      )
+      write_csv(rbind(data, row), file_paths$employees)
+      removeModal()
+      changed(changed() + 1)
+      showNotification("Employee added.")
+    })
+
+    observeEvent(input$edit, {
+      selected <- input$table_rows_selected
+      data <- employees()
+
+      if (is.null(selected) || !length(selected) || selected[1] > nrow(data)) {
+        return(showNotification("Select an employee to edit.", type = "warning"))
+      }
+
+      employee <- data[selected[1], , drop = FALSE]
+      showModal(modalDialog(
+        title = paste("Edit employee:", employee$Name),
+        selectInput(
+          session$ns("edit_role"),
+          "Role",
+          choices = EMPLOYEE_ROLES,
+          selected = employee$Role
+        ),
+        checkboxInput(
+          session$ns("edit_active"),
+          "Active",
+          value = isTRUE(employee$Active)
+        ),
+        footer = tagList(
+          modalButton("Cancel"),
+          actionButton(session$ns("save_edit"), "Save changes", class = "btn-primary")
+        )
+      ))
+    })
+
+    observeEvent(input$save_edit, {
+      selected <- input$table_rows_selected
+      data <- read_employees()
+
+      if (is.null(selected) || !length(selected) || selected[1] > nrow(employees())) {
+        removeModal()
+        return(showNotification("Select an employee to edit.", type = "warning"))
+      }
+
+      selected_id <- employees()$State_ID[selected[1]]
+      row_index <- which(as.character(data$State_ID) == as.character(selected_id))[1]
+      if (is.na(row_index)) {
+        removeModal()
+        return(showNotification("The selected employee could not be found.", type = "error"))
+      }
+
+      data$Role[row_index] <- input$edit_role
+      data$Active[row_index] <- isTRUE(input$edit_active)
+      write_csv(data, file_paths$employees)
+      removeModal()
+      changed(changed() + 1)
+      showNotification("Employee updated.")
+    })
+  })
+}
+
+mod_transactions_ui <- function(id) {
+  ns <- NS(id)
+  tagList(
+    h2("Transaction History"),
+    div(
+      class = "page-card",
+      DTOutput(ns("transactions_table"))
+    ),
+    div(
+      class = "page-card",
+      uiOutput(ns("transaction_details"))
+    )
+  )
+}
+
+mod_transactions_server <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    transaction_data <- reactive({
+      transactions <- read_transactions()
+      if (!nrow(transactions)) return(data.frame())
+
+      inventory <- read_inventory()
+      details <- read_csv(file_paths$transaction_items)
+      employees <- read_employees()
+
+      rows <- lapply(seq_len(nrow(transactions)), function(i) {
+        tx <- transactions[i, , drop = FALSE]
+        tx_items <- details[details$transaction_id == tx$transaction_id, , drop = FALSE]
+        employee <- employees[
+          as.character(employees$State_ID) == as.character(tx$employee_State_ID),
+          , drop = FALSE
+        ]
+        employee_name <- if (nrow(employee)) employee$Name[1] else "Unknown"
+
+        if (!nrow(tx_items)) {
+          return(data.frame(
+            transaction_id = tx$transaction_id,
+            transaction_number = tx$transaction_number,
+            created_at = tx$created_at,
+            employee_State_ID = tx$employee_State_ID,
+            employee_name = employee_name,
+            seller_name = tx$seller_name,
+            seller_State_ID = tx$seller_State_ID,
+            payment_method = tx$payment_method,
+            item_name = NA_character_,
+            unit_price = NA_real_,
+            total = tx$total,
+            stringsAsFactors = FALSE
+          ))
+        }
+
+        data.frame(
+          transaction_id = tx$transaction_id,
+          transaction_number = tx$transaction_number,
+          created_at = tx$created_at,
+          employee_State_ID = tx$employee_State_ID,
+          employee_name = employee_name,
+          seller_name = tx$seller_name,
+          seller_State_ID = tx$seller_State_ID,
+          payment_method = tx$payment_method,
+          item_name = inventory$name[match(tx_items$item_id, inventory$item_id)],
+          unit_price = tx_items$unit_price,
+          total = tx$total,
+          stringsAsFactors = FALSE
+        )
+      })
+
+      do.call(rbind, rows)
+    })
+
+    output$transactions_table <- renderDT({
+      data <- transaction_data()
+      if (!nrow(data)) {
+        return(datatable(
+          data.frame(message = "No transactions found."),
+          rownames = FALSE,
+          options = list(dom = "t")
+        ))
+      }
+
+      summary <- data[!duplicated(data$transaction_id), c(
+        "transaction_number",
+        "seller_name",
+        "employee_name",
+        "total"
+      ), drop = FALSE]
+      names(summary) <- c("Sale ID", "Seller Name", "Employee Name", "Total")
+
+      datatable(
+        summary,
+        rownames = FALSE,
+        selection = "single",
+        options = list(pageLength = 20, dom = "tip")
+      )
+    }, server = FALSE)
+
+    output$transaction_details <- renderUI({
+      selected <- input$transactions_table_rows_selected
+      data <- transaction_data()
+
+      if (!nrow(data) || is.null(selected) || !length(selected)) return(NULL)
+
+      summary <- data[!duplicated(data$transaction_id), , drop = FALSE]
+      if (selected[1] > nrow(summary)) return(NULL)
+      transaction_id <- summary$transaction_id[selected[1]]
+      details <- data[data$transaction_id == transaction_id, , drop = FALSE]
+
+      employee <- read_employees()
+      employee <- employee[
+        as.character(employee$State_ID) == as.character(details$employee_State_ID[1]),
+        , drop = FALSE
+      ]
+      employee_label <- if (nrow(employee)) {
+        paste(employee$Name[1], "(", employee$Role[1], ")")
+      } else {
+        "Unknown"
+      }
+
+      tagList(
+        h3(paste("Transaction details —", details$transaction_number[1])),
+        fluidRow(
+          column(4, strong("Sale ID"), br(), details$transaction_number[1]),
+          column(4, strong("Date"), br(), details$created_at[1]),
+          column(4, strong("Payment method"), br(), details$payment_method[1])
+        ),
+        fluidRow(
+          column(4, strong("Current employee"), br(), employee_label),
+          column(4, strong("Employee State ID"), br(), details$employee_State_ID[1]),
+          column(4, strong("Seller name"), br(), details$seller_name[1])
+        ),
+        fluidRow(
+          column(4, strong("Seller State ID"), br(), details$seller_State_ID[1])
+        ),
+        br(),
+        renderTable({
+          details[, c("item_name", "unit_price"), drop = FALSE]
+        }, rownames = FALSE),
+        strong(paste("Total:", currency(details$total[1])))
+      )
     })
   })
 }

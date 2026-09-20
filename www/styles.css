@@ -8,7 +8,33 @@ body {
 h2 { color: #684f24; font-weight: 700; }
 .demo-note { color: #f7c948; font-size: .85rem; margin-top: 2rem; }
 
-/* POS card container styling */
+/* Common page card styling */
+.page-card {
+  margin: 0 0 20px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #c8c1b7;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(37, 37, 37, 0.08);
+}
+
+.page-card h3 {
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d8d1c7;
+  color: #684f24;
+}
+
+.page-card .dataTables_wrapper,
+.page-card .table-output {
+  margin-top: 12px;
+}
+
+.page-card .btn + .btn {
+  margin-left: 8px;
+}
+
+/* POS card styles */
 .pos-card {
   margin: 0 0 20px;
   padding: 20px;
@@ -34,19 +60,31 @@ h2 { color: #684f24; font-weight: 700; }
   margin-left: 8px;
 }
 
-/* Dark mode styles */
 .dark-mode, .dark-mode .container-fluid, .dark-mode .main-container { background: #1e1e1e; color: #eeeeee; }
 .dark-mode .sidebarPanel { background: #111111; color: #f7c948; }
 .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode label, .dark-mode p, .dark-mode .control-label { color: #eeeeee; }
 .dark-mode .well, .dark-mode .modal-content, .dark-mode .form-control { background: #2b2b2b; color: #eeeeee; border-color: #555555; }
 
+.dark-mode .page-card,
 .dark-mode .pos-card {
   background: #2b2b2b;
   border-color: #666666;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
+.dark-mode .page-card h3,
 .dark-mode .pos-card h3 { border-bottom-color: #555555; color: #f7c948; }
+
+.dark-mode .page-card .form-control,
+.dark-mode .page-card .selectize-input,
+.dark-mode .page-card .selectize-dropdown,
+.dark-mode .page-card .selectize-dropdown-content,
+.dark-mode .page-card input,
+.dark-mode .page-card select,
+.dark-mode .page-card textarea,
+.dark-mode .page-card .btn,
+.dark-mode .page-card .dataTables_wrapper .dataTables_filter input,
+.dark-mode .page-card .dataTables_wrapper .dataTables_length select,
 .dark-mode .pos-card .form-control,
 .dark-mode .pos-card .selectize-input,
 .dark-mode .pos-card .selectize-dropdown,
@@ -62,6 +100,10 @@ h2 { color: #684f24; font-weight: 700; }
   border-color: #777777 !important;
 }
 
+.dark-mode .page-card .form-control::placeholder,
+.dark-mode .page-card .selectize-input input,
+.dark-mode .page-card .selectize-dropdown .option,
+.dark-mode .page-card .selectize-dropdown .active,
 .dark-mode .pos-card .form-control::placeholder,
 .dark-mode .pos-card .selectize-input input,
 .dark-mode .pos-card .selectize-dropdown .option,
@@ -69,6 +111,10 @@ h2 { color: #684f24; font-weight: 700; }
   color: #d9d9d9 !important;
 }
 
+.dark-mode .page-card table,
+.dark-mode .page-card table.table,
+.dark-mode .page-card table.dataTable,
+.dark-mode .page-card .dataTables_wrapper table,
 .dark-mode .pos-card table,
 .dark-mode .pos-card table.table,
 .dark-mode .pos-card table.dataTable,
@@ -78,6 +124,11 @@ h2 { color: #684f24; font-weight: 700; }
   border-color: #555555 !important;
 }
 
+.dark-mode .page-card table thead,
+.dark-mode .page-card table thead tr,
+.dark-mode .page-card table thead th,
+.dark-mode .page-card table.dataTable thead th,
+.dark-mode .page-card table.dataTable thead td,
 .dark-mode .pos-card table thead,
 .dark-mode .pos-card table thead tr,
 .dark-mode .pos-card table thead th,
@@ -88,6 +139,11 @@ h2 { color: #684f24; font-weight: 700; }
   border-color: #666666 !important;
 }
 
+.dark-mode .page-card table tbody,
+.dark-mode .page-card table tbody tr,
+.dark-mode .page-card table tbody td,
+.dark-mode .page-card table.dataTable tbody tr,
+.dark-mode .page-card table.dataTable tbody td,
 .dark-mode .pos-card table tbody,
 .dark-mode .pos-card table tbody tr,
 .dark-mode .pos-card table tbody td,
@@ -98,6 +154,9 @@ h2 { color: #684f24; font-weight: 700; }
   border-color: #555555 !important;
 }
 
+.dark-mode .page-card table tbody tr:hover,
+.dark-mode .page-card table.dataTable tbody tr:hover,
+.dark-mode .page-card table.dataTable tbody tr:hover > td,
 .dark-mode .pos-card table tbody tr:hover,
 .dark-mode .pos-card table.dataTable tbody tr:hover,
 .dark-mode .pos-card table.dataTable tbody tr:hover > td {
@@ -105,6 +164,9 @@ h2 { color: #684f24; font-weight: 700; }
   color: #ffffff !important;
 }
 
+.dark-mode .page-card .dataTables_wrapper .dataTables_paginate .paginate_button,
+.dark-mode .page-card .dataTables_wrapper .dataTables_filter input,
+.dark-mode .page-card .dataTables_wrapper .dataTables_length select,
 .dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button,
 .dark-mode .pos-card .dataTables_wrapper .dataTables_filter input,
 .dark-mode .pos-card .dataTables_wrapper .dataTables_length select {
@@ -113,20 +175,18 @@ h2 { color: #684f24; font-weight: 700; }
   border-color: #666666 !important;
 }
 
+.dark-mode .page-card .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+.dark-mode .page-card .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
 .dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button.current {
   background: #684f24 !important;
   color: #ffffff !important;
 }
 
-.dark-mode .pos-card .btn-default,
-.dark-mode .pos-card .btn-primary,
-.dark-mode .pos-card .btn-success,
-.dark-mode .pos-card .btn-danger,
-.dark-mode .pos-card .btn-secondary {
-  border-color: #777777;
-}
-
+.dark-mode .page-card strong,
+.dark-mode .page-card .control-label,
+.dark-mode .page-card .shiny-output-error,
+.dark-mode .page-card .shiny-text-output,
 .dark-mode .pos-card strong,
 .dark-mode .pos-card .control-label,
 .dark-mode .pos-card .shiny-output-error,
