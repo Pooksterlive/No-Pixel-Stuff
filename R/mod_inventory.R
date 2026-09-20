@@ -1,15 +1,45 @@
 mod_inventory_ui <- function(id) {
   ns <- NS(id)
-  tagList(h2("Inventory Management"), fluidRow(valueBoxOutput(ns("item_count"), 4), valueBoxOutput(ns("available_value"), 4), valueBoxOutput(ns("available_count"), 4)), wellPanel(fluidRow(column(4, textInput(ns("search"), "Search", placeholder = "SKU, name, brand...")), column(3, selectInput(ns("status"), "Status", c("All", ITEM_STATUSES))), column(3, selectInput(ns("category"), "Category", c("All", "Jewelry", "Electronics", "Tools", "Other"))), column(2, br(), actionButton(ns("add"), "Add item", class = "btn-primary")))), DTOutput(ns("table")))
+  tagList(
+    h2("Inventory Management"),
+    fluidRow(valueBoxOutput(ns("item_count"), 6), valueBoxOutput(ns("inventory_value"), 6)),
+    wellPanel(fluidRow(column(8, textInput(ns("search"), "Search inventory", placeholder = "Item ID or name...")), column(4, br(), actionButton(ns("add"), "Add item", class = "btn-primary")))),
+    DTOutput(ns("table"))
+  )
 }
+
 mod_inventory_server <- function(id, changed = reactiveVal(0)) {
   moduleServer(id, function(input, output, session) {
-    items <- reactive({ changed(); data <- read_inventory(); term <- tolower(trimws(input$search %||% "")); if (nzchar(term)) data <- data[grepl(term, tolower(paste(data$sku, data$item_name, data$brand)), fixed = TRUE), , drop = FALSE]; if (input$status != "All") data <- data[data$status == input$status, , drop = FALSE]; if (input$category != "All") data <- data[data$category == input$category, , drop = FALSE]; data })
-    output$table <- renderDT(datatable(items()[, c("item_id", "sku", "item_name", "category", "condition", "asking_price", "status", "location"), drop = FALSE], rownames = FALSE, options = list(pageLength = 8)))
-    output$item_count <- renderValueBox(valueBox(nrow(items()), "Visible items", icon = icon("boxes")))
-    output$available_count <- renderValueBox(valueBox(sum(items()$status == "Available"), "Available", icon = icon("check")))
-    output$available_value <- renderValueBox(valueBox(currency(sum(items()$asking_price[items()$status == "Available"])), "Available value", icon = icon("dollar-sign")))
-    observeEvent(input$add, showModal(modalDialog(textInput(session$ns("item_name"), "Item name"), textInput(session$ns("category_new"), "Category"), selectInput(session$ns("condition"), "Condition", c("New", "Very Good", "Good", "Fair", "Poor")), numericInput(session$ns("cost_basis"), "Cost basis", 0, min = 0), numericInput(session$ns("asking_price"), "Asking price", 0, min = 0), textInput(session$ns("location"), "Location"), footer = tagList(modalButton("Cancel"), actionButton(session$ns("save"), "Save", class = "btn-primary"))))
-    observeEvent(input$save, { req(input$item_name, input$category_new); err <- validate_item(list(item_name = input$item_name, category = input$category_new, cost_basis = input$cost_basis, asking_price = input$asking_price)); if (!is.null(err)) return(showNotification(err, type = "error")); data <- read_inventory(); row <- data.frame(item_id = next_id(data, "item_id"), sku = new_number("HKP-"), item_name = input$item_name, category = input$category_new, condition = input$condition, brand = "", cost_basis = input$cost_basis, asking_price = input$asking_price, status = "Available", location = input$location, created_at = as.character(Sys.time()), updated_at = as.character(Sys.time())); write_csv(rbind(data, row), file_paths$inventory); removeModal(); changed(changed() + 1); showNotification("Inventory item added.") })
+    items <- reactive({
+      changed()
+      data <- read_inventory()
+      term <- tolower(trimws(input$search %||% ""))
+      if (nzchar(term) && nrow(data)) data <- data[grepl(term, tolower(paste(data$item_id, data$name)), fixed = TRUE), , drop = FALSE]
+      data
+    })
+
+    output$table <- renderDT(datatable(items(), rownames = FALSE, options = list(pageLength = 8)))
+    output$item_count <- renderValueBox(valueBox(nrow(items()), "Items", icon = icon("boxes")))
+    output$inventory_value <- renderValueBox(valueBox(currency(sum(items()$price)), "Inventory value", icon = icon("dollar-sign")))
+
+    observeEvent(input$add, {
+      showModal(modalDialog(
+        textInput(session$ns("name"), "Item name"),
+        numericInput(session$ns("price"), "Price", 0, min = 0),
+        footer = tagList(modalButton("Cancel"), actionButton(session$ns("save"), "Save", class = "btn-primary"))
+      ))
+    })
+
+    observeEvent(input$save, {
+      req(input$name)
+      err <- validate_item(input)
+      if (!is.null(err)) return(showNotification(err, type = "error"))
+      data <- read_inventory()
+      row <- data.frame(item_id = next_id(data, "item_id"), name = input$name, price = input$price, stringsAsFactors = FALSE)
+      write_csv(rbind(data, row), file_paths$inventory)
+      removeModal()
+      changed(changed() + 1)
+      showNotification("Inventory item added.")
+    })
   })
 }

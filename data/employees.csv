@@ -1,2 +1,2 @@
-employee_id,employee_number,first_name,last_name,role,email,active,created_at
-1,EMP-001,Demo,Manager,Manager,demo@hongkongpawn.example,TRUE,2026-09-20
+State_ID,Name,Role,Active,Hire_Date
+1,Demo Manager,Manager,TRUE,2026-09-20

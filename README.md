@@ -14,6 +14,20 @@ Features:
 - Employee management
 - Static GitHub Pages documentation in `docs/`
 
+### CSV file formats
+
+`data/inventory.csv` contains only:
+
+```text
+item_id,name,price
+```
+
+`data/employees.csv` contains only:
+
+```text
+State_ID,Name,Role,Active,Hire_Date
+```
+
 ### Run locally
 
 Install the required packages:

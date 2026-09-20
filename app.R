@@ -26,19 +26,13 @@ server <- function(input, output, session) {
 
   output$employee_selector <- renderUI({
     data <- employees()
-    choices <- setNames(data$employee_id, paste(data$first_name, data$last_name, "—", data$role))
-    selectInput("employee_id", "Current employee", choices = choices, selected = if (nrow(data)) data$employee_id[1])
+    active <- data[data$Active == TRUE, , drop = FALSE]
+    choices <- setNames(active$State_ID, paste(active$Name, "—", active$Role))
+    selectInput("State_ID", "Current employee", choices = choices, selected = if (nrow(active)) active$State_ID[1])
   })
 
-  output$page_content <- renderUI({
-    switch(input$page,
-      pos = mod_pos_ui("pos"),
-      inventory = mod_inventory_ui("inventory"),
-      employee = mod_employee_ui("employee")
-    )
-  })
-
-  mod_pos_server("pos", employee_id = reactive(input$employee_id), changed = inventory_changed)
+  output$page_content <- renderUI({ switch(input$page, pos = mod_pos_ui("pos"), inventory = mod_inventory_ui("inventory"), employee = mod_employee_ui("employee")) })
+  mod_pos_server("pos", State_ID = reactive(input$State_ID), changed = inventory_changed)
   mod_inventory_server("inventory", changed = inventory_changed)
   mod_employee_server("employee", changed = employee_changed)
 }
