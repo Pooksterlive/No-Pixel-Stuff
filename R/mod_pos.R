@@ -2,21 +2,30 @@ mod_pos_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h2("Point of Sale"),
-    h3("Seller information"),
     fluidRow(
-      column(6, textInput(ns("seller_name"), "Seller name", placeholder = "Full name")),
-      column(6, textInput(ns("seller_State_ID"), "Seller State ID", placeholder = "State identification number"))
-    ),
-    DTOutput(ns("items")),
-    h3("Cart"),
-    tableOutput(ns("cart")),
-    selectInput(ns("discount"), "Discount", choices = setNames(seq(0, 100, by = 5), paste0(seq(0, 100, by = 5), "%")), selected = 0),
-    strong(textOutput(ns("discounted_total"))),
-    selectInput(ns("payment"), "Payment method", PAYMENT_METHODS),
-    numericInput(ns("tendered"), "Amount tendered", 0, min = 0),
-    textOutput(ns("change")),
-    actionButton(ns("checkout"), "Complete sale", class = "btn-success"),
-    actionButton(ns("clear"), "Clear cart")
+      column(
+        width = 7,
+        h3("Seller information"),
+        fluidRow(
+          column(6, textInput(ns("seller_name"), "Seller name", placeholder = "Full name")),
+          column(6, textInput(ns("seller_State_ID"), "Seller State ID", placeholder = "State identification number"))
+        ),
+        textInput(ns("search"), "Find inventory", placeholder = "Search by item name"),
+        DTOutput(ns("items"))
+      ),
+      column(
+        width = 5,
+        h3("Cart"),
+        tableOutput(ns("cart")),
+        selectInput(ns("discount"), "Discount", choices = setNames(seq(0, 100, by = 5), paste0(seq(0, 100, by = 5), "%")), selected = 0),
+        strong(textOutput(ns("discounted_total"))),
+        selectInput(ns("payment"), "Payment method", PAYMENT_METHODS),
+        numericInput(ns("tendered"), "Amount tendered", 0, min = 0),
+        textOutput(ns("change")),
+        actionButton(ns("checkout"), "Complete sale", class = "btn-success"),
+        actionButton(ns("clear"), "Clear cart")
+      )
+    )
   )
 }
 
@@ -27,6 +36,8 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
     available <- reactive({
       changed()
       data <- read_inventory()
+      term <- tolower(trimws(input$search %||% ""))
+      if (nzchar(term) && nrow(data)) data <- data[grepl(term, tolower(data$name), fixed = TRUE), , drop = FALSE]
       data
     })
 
@@ -62,6 +73,7 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       seller_state_id <- trimws(input$seller_State_ID %||% "")
       if (!nzchar(seller_name)) return(showNotification("Seller name is required.", type = "error"))
       if (!nzchar(seller_state_id)) return(showNotification("Seller State ID is required.", type = "error"))
+
       employees <- read_employees()
       employee <- employees[as.character(employees$State_ID) == as.character(State_ID()) & employees$Active == TRUE, , drop = FALSE]
       if (!nrow(employee)) return(showNotification("Select an active employee.", type = "error"))
@@ -72,11 +84,13 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       tx_number <- new_number("SALE-")
       tx <- data.frame(transaction_id = tx_id, transaction_number = tx_number, employee_State_ID = as.integer(State_ID()), seller_name = seller_name, seller_State_ID = seller_state_id, total = total(), payment_method = input$payment, created_at = as.character(Sys.time()), stringsAsFactors = FALSE)
       write_csv(rbind(transactions, tx), file_paths$transactions)
+
       details <- read_csv(file_paths$transaction_items)
       cart_data <- cart()
       cart_data$price <- round(cart_data$original_price * (1 - as.numeric(input$discount %||% 0) / 100), 2)
       new_details <- data.frame(transaction_item_id = next_id(details, "transaction_item_id") + seq_len(nrow(cart_data)) - 1L, transaction_id = tx_id, item_id = cart_data$item_id, unit_price = cart_data$price, stringsAsFactors = FALSE)
       write_csv(rbind(details, new_details), file_paths$transaction_items)
+
       showNotification(paste("Sale completed:", tx_number))
       cart(data.frame(item_id = integer(), name = character(), original_price = numeric(), stringsAsFactors = FALSE))
       updateTextInput(session, "seller_name", value = "")
