@@ -2,8 +2,11 @@ mod_transactions_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h2("Transaction History"),
-    p("Select a transaction to view its details."),
-    DTOutput(ns("transactions_table")),
+    div(
+      class = "page-card",
+      p("Select a transaction to view its details."),
+      DTOutput(ns("transactions_table"))
+    ),
     uiOutput(ns("transaction_details"))
   )
 }
@@ -111,8 +114,8 @@ mod_transactions_server <- function(id) {
         "Unknown"
       }
 
-      tagList(
-        tags$hr(),
+      div(
+        class = "page-card",
         h3(paste("Transaction details —", details$transaction_number[1])),
         fluidRow(
           column(4, strong("Sale ID"), br(), details$transaction_number[1]),
