@@ -88,24 +88,116 @@ h2 {
   color: #f7c948;
 }
 
-.dark-mode .table,
-.dark-mode .table > thead > tr > th,
-.dark-mode .table > tbody > tr > td {
-  background: #2b2b2b;
-  color: #eeeeee;
-  border-color: #555555;
+/* Keep every POS control readable against the dark card background. */
+.dark-mode .pos-card input.form-control,
+.dark-mode .pos-card input[type="text"],
+.dark-mode .pos-card input[type="number"],
+.dark-mode .pos-card select.form-control,
+.dark-mode .pos-card textarea,
+.dark-mode .pos-card .selectize-input {
+  background: #3a3a3a !important;
+  color: #ffffff !important;
+  border: 1px solid #777777 !important;
+  box-shadow: none;
 }
 
-.dark-mode .dataTables_wrapper .dataTables_info,
-.dark-mode .dataTables_wrapper .dataTables_length,
-.dark-mode .dataTables_wrapper .dataTables_filter,
-.dark-mode .dataTables_wrapper .dataTables_paginate {
-  color: #eeeeee;
+.dark-mode .pos-card input.form-control::placeholder,
+.dark-mode .pos-card input[type="text"]::placeholder,
+.dark-mode .pos-card input[type="number"]::placeholder {
+  color: #bdbdbd !important;
+  opacity: 1;
 }
 
-.dark-mode .dataTables_wrapper .dataTables_filter input,
-.dark-mode .dataTables_wrapper .dataTables_length select {
-  background: #2b2b2b;
-  color: #eeeeee;
-  border-color: #777777;
+.dark-mode .pos-card input.form-control:focus,
+.dark-mode .pos-card select.form-control:focus,
+.dark-mode .pos-card .selectize-input.focus {
+  border-color: #f7c948 !important;
+  box-shadow: 0 0 0 2px rgba(247, 201, 72, 0.25) !important;
+}
+
+.dark-mode .pos-card .selectize-control,
+.dark-mode .pos-card .selectize-dropdown,
+.dark-mode .pos-card .selectize-dropdown-content,
+.dark-mode .pos-card .selectize-dropdown .option,
+.dark-mode .pos-card .selectize-dropdown .active,
+.dark-mode .pos-card .selectize-input .item,
+.dark-mode .pos-card .selectize-input input {
+  background: #3a3a3a !important;
+  color: #ffffff !important;
+  border-color: #777777 !important;
+}
+
+.dark-mode .pos-card .selectize-dropdown .option:hover,
+.dark-mode .pos-card .selectize-dropdown .active {
+  background: #684f24 !important;
+  color: #ffffff !important;
+}
+
+.dark-mode .pos-card .table,
+.dark-mode .pos-card .table > thead > tr > th,
+.dark-mode .pos-card .table > tbody > tr > td,
+.dark-mode .pos-card table.dataTable,
+.dark-mode .pos-card table.dataTable thead,
+.dark-mode .pos-card table.dataTable thead th,
+.dark-mode .pos-card table.dataTable tbody,
+.dark-mode .pos-card table.dataTable tbody tr,
+.dark-mode .pos-card table.dataTable tbody td {
+  background: #2b2b2b !important;
+  color: #eeeeee !important;
+  border-color: #555555 !important;
+}
+
+.dark-mode .pos-card table.dataTable tbody tr:hover,
+.dark-mode .pos-card table.dataTable tbody tr:hover > td {
+  background: #414141 !important;
+  color: #ffffff !important;
+}
+
+.dark-mode .pos-card .dataTables_wrapper,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_info,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_length,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_filter,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_paginate {
+  color: #eeeeee !important;
+}
+
+.dark-mode .pos-card .dataTables_wrapper .dataTables_filter input,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_length select,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button {
+  background: #3a3a3a !important;
+  color: #eeeeee !important;
+  border: 1px solid #777777 !important;
+}
+
+.dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+.dark-mode .pos-card .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: #684f24 !important;
+  color: #ffffff !important;
+  border-color: #f7c948 !important;
+}
+
+.dark-mode .pos-card .text-output,
+.dark-mode .pos-card #pos-discounted_total,
+.dark-mode .pos-card #pos-change,
+.dark-mode .pos-card strong {
+  color: #ffffff !important;
+}
+
+.dark-mode .pos-card .btn-success {
+  background: #3f7d4f !important;
+  border-color: #70b77e !important;
+  color: #ffffff !important;
+}
+
+.dark-mode .pos-card .btn-default,
+.dark-mode .pos-card .btn-secondary {
+  background: #444444 !important;
+  border-color: #888888 !important;
+  color: #ffffff !important;
+}
+
+.dark-mode .pos-card .btn:hover,
+.dark-mode .pos-card .btn:focus {
+  filter: brightness(1.15);
+  color: #ffffff !important;
 }
