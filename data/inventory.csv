@@ -1,0 +1,4 @@
+item_id,sku,item_name,category,condition,brand,cost_basis,asking_price,status,location,created_at,updated_at
+1,HKP-001,Vintage Watch,Jewelry,Good,Seiko,80,180,Available,Case A,2026-09-20,2026-09-20
+2,HKP-002,Game Console,Electronics,Very Good,Nintendo,120,275,Available,Shelf 2,2026-09-20,2026-09-20
+3,HKP-003,Gold Bracelet,Jewelry,Good,Unbranded,250,500,Available,Case B,2026-09-20,2026-09-20

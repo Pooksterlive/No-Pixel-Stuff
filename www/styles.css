@@ -1,0 +1,5 @@
+body { background: #f4f1eb; }
+.bslib-sidebar-layout > .sidebar { background: #252525; color: #f7c948; }
+h2 { color: #684f24; font-weight: 700; }
+.demo-note { color: #f7c948; font-size: .85rem; margin-top: 2rem; }
+.value-box { border-radius: 8px; }

@@ -1,2 +1,30 @@
 # No-Pixel-Stuff
-No Pixel GTA Server Workplace
+
+No Pixel GTA Server Workplace.
+
+## Hong Kong Pawn
+
+A multi-file R Shiny demo application for **Hong Kong Pawn**, a fictional pawn-shop point-of-sale system.
+
+Features:
+
+- Point of sale with simulated checkout
+- CSV-backed inventory, employees, and transactions
+- Inventory management
+- Employee management
+- Static GitHub Pages documentation in `docs/`
+
+### Run locally
+
+Install the required packages:
+
+```r
+install.packages(c("shiny", "DT", "bslib"))
+shiny::runApp()
+```
+
+The application uses CSV files in `data/` rather than a database. Local development can write changes to those files. A deployed Shiny host must provide persistent writable storage if changes should survive restarts; writing from the app will not commit changes back to GitHub automatically.
+
+This is a fictional demo. Do not enter real payment information, passwords, or sensitive personal data.
+
+GitHub Pages hosts the documentation in `docs/`; the Shiny runtime must be deployed to a Shiny-compatible host such as shinyapps.io or Posit Connect.
