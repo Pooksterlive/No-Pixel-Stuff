@@ -2,8 +2,7 @@ mod_inventory_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h2("Inventory Management"),
-    fluidRow(valueBoxOutput(ns("item_count"), 6), valueBoxOutput(ns("inventory_value"), 6)),
-    wellPanel(fluidRow(column(8, textInput(ns("search"), "Search inventory", placeholder = "Item ID or name...")), column(4, br(), actionButton(ns("add"), "Add item", class = "btn-primary")))),
+    p("Edit an item name or price directly in the table. Changes are saved to data/inventory.csv."),
     DTOutput(ns("table"))
   )
 }
@@ -12,34 +11,54 @@ mod_inventory_server <- function(id, changed = reactiveVal(0)) {
   moduleServer(id, function(input, output, session) {
     items <- reactive({
       changed()
-      data <- read_inventory()
-      term <- tolower(trimws(input$search %||% ""))
-      if (nzchar(term) && nrow(data)) data <- data[grepl(term, tolower(paste(data$item_id, data$name)), fixed = TRUE), , drop = FALSE]
-      data
+      read_inventory()
     })
 
-    output$table <- renderDT(datatable(items(), rownames = FALSE, options = list(pageLength = 8)))
-    output$item_count <- renderValueBox(valueBox(nrow(items()), "Items", icon = icon("boxes")))
-    output$inventory_value <- renderValueBox(valueBox(currency(sum(items()$price)), "Inventory value", icon = icon("dollar-sign")))
+    output$table <- renderDT({
+      datatable(
+        items(),
+        rownames = FALSE,
+        editable = list(
+          target = "cell",
+          disable = list(columns = 0)
+        ),
+        options = list(pageLength = 10, dom = "tip")
+      )
+    }, server = FALSE)
 
-    observeEvent(input$add, {
-      showModal(modalDialog(
-        textInput(session$ns("name"), "Item name"),
-        numericInput(session$ns("price"), "Price", 0, min = 0),
-        footer = tagList(modalButton("Cancel"), actionButton(session$ns("save"), "Save", class = "btn-primary"))
-      ))
-    })
-
-    observeEvent(input$save, {
-      req(input$name)
-      err <- validate_item(input)
-      if (!is.null(err)) return(showNotification(err, type = "error"))
+    observeEvent(input$table_cell_edit, {
+      edit <- input$table_cell_edit
       data <- read_inventory()
-      row <- data.frame(item_id = next_id(data, "item_id"), name = input$name, price = input$price, stringsAsFactors = FALSE)
-      write_csv(rbind(data, row), file_paths$inventory)
-      removeModal()
+
+      if (!nrow(data) || edit$row < 1 || edit$row > nrow(items())) return()
+      displayed_row <- items()[edit$row, , drop = FALSE]
+      item_index <- which(as.character(data$item_id) == as.character(displayed_row$item_id))[1]
+      if (is.na(item_index)) return()
+
+      column_name <- names(items())[edit$col + 1]
+      if (!column_name %in% c("name", "price")) return()
+
+      if (column_name == "name") {
+        value <- trimws(as.character(edit$value))
+        if (!nzchar(value)) {
+          showNotification("Item name cannot be empty.", type = "error")
+          return()
+        }
+        data[item_index, column_name] <- value
+      }
+
+      if (column_name == "price") {
+        value <- suppressWarnings(as.numeric(edit$value))
+        if (is.na(value) || value < 0) {
+          showNotification("Price must be a non-negative number.", type = "error")
+          return()
+        }
+        data[item_index, column_name] <- value
+      }
+
+      write_csv(data, file_paths$inventory)
       changed(changed() + 1)
-      showNotification("Inventory item added.")
+      showNotification("Inventory changes saved.", type = "message")
     })
   })
 }
