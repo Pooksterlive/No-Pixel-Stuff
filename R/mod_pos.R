@@ -184,7 +184,20 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       write_csv(rbind(transactions, tx), file_paths$transactions)
 
       details <- read_csv(file_paths$transaction_items)
-      if (!"quantity" %in% names(details)) details$quantity <- 1L
+      if (!nrow(details) && !length(names(details))) {
+        details <- data.frame(
+          transaction_item_id = integer(),
+          transaction_id = integer(),
+          item_id = integer(),
+          quantity = integer(),
+          unit_price = numeric(),
+          stringsAsFactors = FALSE
+        )
+      } else if (!"quantity" %in% names(details)) {
+        details$quantity <- integer(nrow(details))
+        if (nrow(details)) details$quantity[] <- 1L
+      }
+
       cart_data <- cart()
       discount_rate <- as.numeric(input$discount %||% 0) / 100
       cart_data$unit_price <- round(cart_data$original_price * (1 - discount_rate), 2)
