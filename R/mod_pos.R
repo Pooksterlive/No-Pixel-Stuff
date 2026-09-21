@@ -17,6 +17,8 @@ mod_pos_ui <- function(id) {
           class = "pos-card",
           h3("Inventory"),
           textInput(ns("search"), "Find inventory", placeholder = "Search by item name"),
+          numericInput(ns("quantity"), "Quantity", value = 1, min = 1, step = 1),
+          p("Select an item below to add the selected quantity to the cart."),
           DTOutput(ns("items"))
         )
       ),
@@ -46,12 +48,15 @@ mod_pos_ui <- function(id) {
 
 mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
   moduleServer(id, function(input, output, session) {
-    cart <- reactiveVal(data.frame(
+    empty_cart <- function() data.frame(
       item_id = integer(),
       name = character(),
       original_price = numeric(),
+      quantity = integer(),
       stringsAsFactors = FALSE
-    ))
+    )
+
+    cart <- reactiveVal(empty_cart())
 
     available <- reactive({
       changed()
@@ -73,13 +78,25 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
 
     observeEvent(input$items_rows_selected, {
       row <- available()[input$items_rows_selected, , drop = FALSE]
-      if (nrow(row)) {
+      quantity <- as.integer(input$quantity %||% 1)
+      if (!nrow(row)) return()
+      if (is.na(quantity) || quantity < 1) {
+        return(showNotification("Quantity must be at least 1.", type = "error"))
+      }
+
+      current <- cart()
+      matching <- which(current$item_id == row$item_id)
+      if (length(matching)) {
+        current$quantity[matching[1]] <- current$quantity[matching[1]] + quantity
+        cart(current)
+      } else {
         cart(rbind(
-          cart(),
+          current,
           data.frame(
             item_id = row$item_id,
             name = row$name,
             original_price = row$price,
+            quantity = quantity,
             stringsAsFactors = FALSE
           )
         ))
@@ -90,17 +107,19 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       data <- cart()
       if (!nrow(data)) {
         data$price <- numeric()
-        return(data[, c("name", "original_price", "price"), drop = FALSE])
+        data$line_total <- numeric()
+        return(data[, c("name", "quantity", "original_price", "price", "line_total"), drop = FALSE])
       }
 
       discount_rate <- as.numeric(input$discount %||% 0) / 100
       data$price <- round(data$original_price * (1 - discount_rate), 2)
-      data[, c("name", "original_price", "price"), drop = FALSE]
+      data$line_total <- round(data$price * data$quantity, 2)
+      data[, c("name", "quantity", "original_price", "price", "line_total"), drop = FALSE]
     })
 
     output$cart <- renderTable(discounted_cart())
 
-    total <- reactive(sum(discounted_cart()$price))
+    total <- reactive(sum(discounted_cart()$line_total))
 
     observeEvent(total(), {
       updateNumericInput(session, "tendered", value = total())
@@ -118,13 +137,9 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
     })
 
     observeEvent(input$clear, {
-      cart(data.frame(
-        item_id = integer(),
-        name = character(),
-        original_price = numeric(),
-        stringsAsFactors = FALSE
-      ))
+      cart(empty_cart())
       updateSelectInput(session, "discount", selected = 0)
+      updateNumericInput(session, "quantity", value = 1)
     })
 
     observeEvent(input$checkout, {
@@ -169,27 +184,27 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       write_csv(rbind(transactions, tx), file_paths$transactions)
 
       details <- read_csv(file_paths$transaction_items)
+      if (!"quantity" %in% names(details)) details$quantity <- 1L
       cart_data <- cart()
-      cart_data$price <- round(cart_data$original_price * (1 - as.numeric(input$discount %||% 0) / 100), 2)
+      discount_rate <- as.numeric(input$discount %||% 0) / 100
+      cart_data$unit_price <- round(cart_data$original_price * (1 - discount_rate), 2)
       new_details <- data.frame(
         transaction_item_id = next_id(details, "transaction_item_id") + seq_len(nrow(cart_data)) - 1L,
         transaction_id = tx_id,
         item_id = cart_data$item_id,
-        unit_price = cart_data$price,
+        quantity = cart_data$quantity,
+        unit_price = cart_data$unit_price,
         stringsAsFactors = FALSE
       )
+      details <- details[, c("transaction_item_id", "transaction_id", "item_id", "quantity", "unit_price"), drop = FALSE]
       write_csv(rbind(details, new_details), file_paths$transaction_items)
 
       showNotification(paste("Sale completed:", tx_number))
-      cart(data.frame(
-        item_id = integer(),
-        name = character(),
-        original_price = numeric(),
-        stringsAsFactors = FALSE
-      ))
+      cart(empty_cart())
       updateTextInput(session, "seller_name", value = "")
       updateTextInput(session, "seller_State_ID", value = "")
       updateSelectInput(session, "discount", selected = 0)
+      updateNumericInput(session, "quantity", value = 1)
       changed(changed() + 1)
     })
   })
