@@ -11,98 +11,78 @@ item_id,name,price
 10,Computer Monitor [Interstate & International Offers],283
 11,Television [Interstate & International Offers],482
 12,Old Smartphone [Interstate & International Offers],186
-13,Computer Monitor [Interstate & International Offers],299
-14,Pearl Necklace [Interstate & International Offers],250
-15,Gold Chain [Interstate & International Offers],295
-16,Luxury Watch [Interstate & International Offers],334
-17,Silver Ring [Interstate & International Offers],121
-18,Vintage Watch [Interstate & International Offers],86
-19,Vintage Camera [Interstate & International Offers],371
-20,Old Smartphone [Interstate & International Offers],203
-21,Laptop [Interstate & International Offers],427
-22,Rare Painting [Interstate & International Offers],1347
-23,Ornate Vase [Interstate & International Offers],192
-24,Silver Ring [Interstate & International Offers],99
-25,Vintage Watch [Interstate & International Offers],373
-26,Simple Medallion [Interstate & International Offers],136
-27,Ancient Artifact [Local Offers],1050
-28,Antique Coin [Local Offers],162
-29,Bronze Medal [Local Offers],78
-30,Computer Monitor [Local Offers],180
-31,Crowex Watch [Local Offers],360
-32,Diamond Earrings [Local Offers],300
-33,Duffel Bag [Local Offers],78
-34,Ghetto Blaster [Local Offers],108
-35,Ornate Vase [Local Offers],192
-36,Gold Chain [Local Offers],195
-37,Golden Statue [Local Offers],1140
-38,Guitar [Local Offers],162
-39,Laptop [Local Offers],27
-40,Microwave [Local Offers],162
-41,Old Smartphone [Local Offers],135
-42,Vintage Watch [Local Offers],90
-43,Pearl Necklace [Local Offers],255
-44,Rare Painting [Local Offers],840
-45,Silver Ring [Local Offers],108
-46,Vintage Camera [Local Offers],270
-47,Vinyl Record [Local Offers],144
-48,Stolen Phone [Local Offers],111
-49,Vintage Watch [Local Offers],90
-50,Ornate Vase [Local Offers],228
-51,Sculpture [Local Offers],270
-52,Simple Medallion [Local Offers],162
-53,Luxury Watch [Local Offers],300
-54,Suitcase [Local Offers],96
-55,Tape Player [Local Offers],78
-56,Television [Local Offers],315
-57,Toolbox [Local Offers],144
-58,Silver Ring [Local Offers],108
-59,Vintage Camera [Local Offers],270
-60,Vinyl Record [Local Offers],144
-61,Gold Chain [Local Offers],195
-62,Stolen Phone [Local Offers],111
-63,Vintage Watch [Local Offers],90
-64,Exhaust Pipe [Interstate & International Offers],228
-65,Car Battery [Interstate & International Offers],167
-66,Catalytic Converter [Interstate & International Offers],380
-67,Car Battery [Local Offers],125
-68,Catalytic Converter [Local Offers],267
-69,Exhaust [Local Offers],201
-70,Wheel [Local Offers],87
-71,White Feathers [Interstate & International Offers],240
-72,Deer Pelt[Legendary] [Interstate & International Offers],1120
-73,Brown Black Feathers [Interstate & International Offers],240
-74,Shimmering Red Brown Feathers [Interstate & International Offers],1200
-75,Red Grey Feathers [Interstate & International Offers],240
-76,Boar Pelt[Normal] [Interstate & International Offers],240
-77,Grey Black Feathers [Interstate & International Offers],240
-78,Lion Pelt [Normal] [Interstate & International Offers],240
-79,Deer Pelt[Normal] [Interstate & International Offers],240
-80,Boar Pelt[Normal] [Interstate & International Offers],240
-81,Brown Black Feathers [Local Offers],180
-82,Deep Green Grey Feathers [Local Offers],1080
-83,Grey Black Feathers [Local Offers],180
-84,Vibrant Red Grey Feathers [Local Offers],840
-85,Red Brown Feathers [Local Offers],180
-86,Red Grey Feathers [Local Offers],180
-87,Shimmering Red Brown Feathers [Local Offers],900
-88,Vibrant White Feathers [Local Offers],1200
-89,White Feathers [Local Offers],180
-90,Boar Pelt[Legendary] [Local Offers],840
-91,Boar Pelt[Normal] [Local Offers],180
-92,Boar Pelt[Rare] [Local Offers],360
-93,Cow Pelt[Legendary] [Local Offers],840
-94,Coyote Pelt[Rare] [Local Offers],360
-95,Deer Pelt[Legendary] [Local Offers],840
-96,Boar Pelt[Rare] [Local Offers],360
-97,Cow Pelt[Legendary] [Local Offers],840
-98,Cow Pelt[Normal] [Local Offers],180
-99,Cow Pelt[Rare] [Local Offers],360
-100,Coyote Pelt[Legendary] [Local Offers],840
-101,Coyote Pelt[Rare] [Local Offers],360
-102,Deer Pelt[Legendary] [Local Offers],840
-103,Deer Pelt[Normal] [Local Offers],180
-104,Deer Pelt[Rare] [Local Offers],360
-105,Lion Pelt[Legendary] [Local Offers],840
-106,Lion Pelt[Normal] [Local Offers],180
-107,Lion Pelt[Rare] [Local Offers],360
+13,Pearl Necklace [Interstate & International Offers],250
+14,Gold Chain [Interstate & International Offers],295
+15,Luxury Watch [Interstate & International Offers],334
+16,Silver Ring [Interstate & International Offers],99
+17,Vintage Watch [Interstate & International Offers],86
+18,Rare Painting [Interstate & International Offers],1347
+19,Ornate Vase [Interstate & International Offers],192
+20,Simple Medallion [Interstate & International Offers],136
+21,Ancient Artifact [Local Offers],1050
+22,Antique Coin [Local Offers],162
+23,Bronze Medal [Local Offers],78
+24,Computer Monitor [Local Offers],180
+25,Crowex Watch [Local Offers],360
+26,Diamond Earrings [Local Offers],300
+27,Duffel Bag [Local Offers],78
+28,Ghetto Blaster [Local Offers],108
+29,Gold Chain [Local Offers],195
+30,Golden Statue [Local Offers],1140
+31,Guitar [Local Offers],162
+32,Laptop [Local Offers],27
+33,Microwave [Local Offers],162
+34,Old Smartphone [Local Offers],135
+35,Vintage Watch [Local Offers],90
+36,Pearl Necklace [Local Offers],255
+37,Rare Painting [Local Offers],840
+38,Silver Ring [Local Offers],108
+39,Vintage Camera [Local Offers],270
+40,Vinyl Record [Local Offers],144
+41,Stolen Phone [Local Offers],111
+42,Ornate Vase [Local Offers],228
+43,Sculpture [Local Offers],270
+44,Luxury Watch [Local Offers],300
+45,Suitcase [Local Offers],96
+46,Tape Player [Local Offers],78
+47,Television [Local Offers],315
+48,Toolbox [Local Offers],144
+49,Exhaust Pipe [Interstate & International Offers],228
+50,Car Battery [Interstate & International Offers],167
+51,Catalytic Converter [Interstate & International Offers],380
+52,Car Battery [Local Offers],125
+53,Catalytic Converter [Local Offers],267
+54,Exhaust [Local Offers],201
+55,Wheel [Local Offers],87
+56,White Feathers [Interstate & International Offers],240
+57,Deer Pelt[Legendary] [Interstate & International Offers],1120
+58,Brown Black Feathers [Interstate & International Offers],240
+59,Shimmering Red Brown Feathers [Interstate & International Offers],1200
+60,Red Grey Feathers [Interstate & International Offers],240
+61,Boar Pelt[Normal] [Interstate & International Offers],240
+62,Grey Black Feathers [Interstate & International Offers],240
+63,Lion Pelt [Normal] [Interstate & International Offers],240
+64,Deer Pelt[Normal] [Interstate & International Offers],240
+65,Brown Black Feathers [Local Offers],180
+66,Deep Green Grey Feathers [Local Offers],1080
+67,Grey Black Feathers [Local Offers],180
+68,Vibrant Red Grey Feathers [Local Offers],840
+69,Red Brown Feathers [Local Offers],180
+70,Red Grey Feathers [Local Offers],180
+71,Shimmering Red Brown Feathers [Local Offers],900
+72,Vibrant White Feathers [Local Offers],1200
+73,White Feathers [Local Offers],180
+74,Boar Pelt[Legendary] [Local Offers],840
+75,Boar Pelt[Normal] [Local Offers],180
+76,Boar Pelt[Rare] [Local Offers],360
+77,Cow Pelt[Legendary] [Local Offers],840
+78,Coyote Pelt[Rare] [Local Offers],360
+79,Deer Pelt[Legendary] [Local Offers],840
+80,Cow Pelt[Normal] [Local Offers],180
+81,Cow Pelt[Rare] [Local Offers],360
+82,Coyote Pelt[Legendary] [Local Offers],840
+83,Deer Pelt[Normal] [Local Offers],180
+84,Deer Pelt[Rare] [Local Offers],360
+85,Lion Pelt[Legendary] [Local Offers],840
+86,Lion Pelt[Normal] [Local Offers],180
+87,Lion Pelt[Rare] [Local Offers],360
