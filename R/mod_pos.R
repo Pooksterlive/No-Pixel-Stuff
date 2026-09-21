@@ -150,9 +150,6 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       if (!nzchar(seller_name)) {
         return(showNotification("Seller name is required.", type = "error"))
       }
-      if (!nzchar(seller_state_id)) {
-        return(showNotification("Seller State ID is required.", type = "error"))
-      }
 
       employees <- read_employees()
       employee <- employees[
