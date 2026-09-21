@@ -102,6 +102,10 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
 
     total <- reactive(sum(discounted_cart()$price))
 
+    observeEvent(total(), {
+      updateNumericInput(session, "tendered", value = total())
+    }, ignoreInit = FALSE)
+
     output$discounted_total <- renderText({
       paste0(
         "Total after ", input$discount %||% 0,
