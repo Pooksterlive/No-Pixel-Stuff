@@ -1,4 +1,14 @@
-data_dir <- "data"
+data_dir <- Sys.getenv(
+  "DATA_DIR",
+  if (dir.exists("/srv/shiny-server/no-pixel-stuff/data")) {
+    "/srv/shiny-server/no-pixel-stuff/data"
+  } else {
+    "data"
+  }
+)
+
+dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
+
 file_paths <- list(
   inventory = file.path(data_dir, "inventory.csv"),
   employees = file.path(data_dir, "employees.csv"),
@@ -15,7 +25,17 @@ initialize_csv_files <- function() {
   if (!file.exists(file_paths$inventory)) write_csv(empty_inventory(), file_paths$inventory)
   if (!file.exists(file_paths$employees)) write_csv(empty_employees(), file_paths$employees)
   if (!file.exists(file_paths$transactions)) write_csv(empty_transactions(), file_paths$transactions)
-  if (!file.exists(file_paths$transaction_items)) write_csv(data.frame(transaction_item_id = integer(), transaction_id = integer(), item_id = integer(), unit_price = numeric(), stringsAsFactors = FALSE), file_paths$transaction_items)
+  if (!file.exists(file_paths$transaction_items)) write_csv(
+    data.frame(
+      transaction_item_id = integer(),
+      transaction_id = integer(),
+      item_id = integer(),
+      quantity = integer(),
+      unit_price = numeric(),
+      stringsAsFactors = FALSE
+    ),
+    file_paths$transaction_items
+  )
 }
 
 read_csv <- function(path) {
