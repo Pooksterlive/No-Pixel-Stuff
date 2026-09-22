@@ -28,6 +28,8 @@ mod_pos_ui <- function(id) {
           class = "pos-card",
           h3("Cart & payment"),
           tableOutput(ns("cart")),
+          selectInput(ns("remove_item"), "Item to remove", choices = character(0)),
+          actionButton(ns("remove_cart_item"), "Remove selected item", class = "btn-danger"),
           selectInput(
             ns("discount"),
             "Discount",
@@ -118,6 +120,27 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
     })
 
     output$cart <- renderTable(discounted_cart())
+
+    observe({
+      data <- cart()
+      choices <- if (nrow(data)) {
+        setNames(as.character(data$item_id), paste0(data$name, " (", data$quantity, ")"))
+      } else {
+        character(0)
+      }
+      updateSelectInput(session, "remove_item", choices = choices, selected = if (length(choices)) choices[1] else character(0))
+    })
+
+    observeEvent(input$remove_cart_item, {
+      selected_item <- input$remove_item
+      if (is.null(selected_item) || !nzchar(selected_item)) {
+        return(showNotification("Select an item to remove.", type = "warning"))
+      }
+
+      current <- cart()
+      current <- current[as.character(current$item_id) != as.character(selected_item), , drop = FALSE]
+      cart(current)
+    })
 
     total <- reactive(sum(discounted_cart()$line_total))
 
