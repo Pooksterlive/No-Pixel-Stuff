@@ -27,8 +27,8 @@ mod_pos_ui <- function(id) {
         div(
           class = "pos-card",
           h3("Cart & payment"),
-          tableOutput(ns("cart")),
-          selectInput(ns("remove_item"), "Item to remove", choices = character(0)),
+          p("Select an item in the cart, then click remove to delete it."),
+          DTOutput(ns("cart")),
           actionButton(ns("remove_cart_item"), "Remove selected item", class = "btn-danger"),
           selectInput(
             ns("discount"),
@@ -119,26 +119,24 @@ mod_pos_server <- function(id, State_ID, changed = reactiveVal(0)) {
       data[, c("name", "quantity", "original_price", "price", "line_total"), drop = FALSE]
     })
 
-    output$cart <- renderTable(discounted_cart())
-
-    observe({
-      data <- cart()
-      choices <- if (nrow(data)) {
-        setNames(as.character(data$item_id), paste0(data$name, " (", data$quantity, ")"))
-      } else {
-        character(0)
-      }
-      updateSelectInput(session, "remove_item", choices = choices, selected = if (length(choices)) choices[1] else character(0))
+    output$cart <- renderDT({
+      datatable(
+        discounted_cart(),
+        selection = "single",
+        rownames = FALSE,
+        options = list(dom = "t")
+      )
     })
 
     observeEvent(input$remove_cart_item, {
-      selected_item <- input$remove_item
-      if (is.null(selected_item) || !nzchar(selected_item)) {
-        return(showNotification("Select an item to remove.", type = "warning"))
+      selected_row <- input$cart_rows_selected
+      current <- cart()
+
+      if (is.null(selected_row) || !length(selected_row) || !nrow(current)) {
+        return(showNotification("Select an item in the cart to remove.", type = "warning"))
       }
 
-      current <- cart()
-      current <- current[as.character(current$item_id) != as.character(selected_item), , drop = FALSE]
+      current <- current[-selected_row[1], , drop = FALSE]
       cart(current)
     })
 
